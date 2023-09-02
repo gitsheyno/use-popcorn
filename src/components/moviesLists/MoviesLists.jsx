@@ -1,13 +1,5 @@
-import Movie from "../movie/Movie";
-
-const MoviesLists = ({ movies }) => {
-  return (
-    <ul className="list">
-      {movies?.map((movie) => (
-        <Movie movie={movie} />
-      ))}
-    </ul>
-  );
+const MoviesLists = ({ children }) => {
+  return <ul className="list">{children}</ul>;
 };
 
 export default MoviesLists;

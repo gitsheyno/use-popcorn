@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MoviesLists from "../moviesLists/MoviesLists";
+import Movie from "../movie/Movie";
 const ListBox = ({ movies }) => {
   const [isOpen1, setIsOpen1] = useState(true);
 
@@ -11,7 +12,13 @@ const ListBox = ({ movies }) => {
       >
         {isOpen1 ? "–" : "+"}
       </button>
-      {isOpen1 && <MoviesLists movies={movies} />}
+      {isOpen1 && (
+        <MoviesLists>
+          {movies?.map((movie) => (
+            <Movie movie={movie} />
+          ))}
+        </MoviesLists>
+      )}
     </div>
   );
 };
