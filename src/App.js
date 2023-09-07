@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/navbar/Navbar";
 import Main from "./components/main/Main";
 import Logo from "./components/logo/Logo";
@@ -57,6 +57,22 @@ const tempWatchedData = [
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        const res = await fetch(
+          "http://www.omdbapi.com/?i=tt3896198&apikey=773314ad&s=Inception"
+        );
+        const data = await res.json();
+        console.log(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchAPI();
+  }, []);
 
   return (
     <>
