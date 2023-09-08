@@ -54,7 +54,7 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-console.log([].length);
+
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
@@ -76,12 +76,11 @@ export default function App() {
           throw new Error("something went wrong");
         }
         const data = await res.json();
-        console.log(data);
+
         if (data.Response === "False") {
           throw new Error("Movie not found");
         }
-        console.log(data, "data");
-        console.log(data.Search, "search");
+
         setMovies(data.Search);
         setIsLoading(false);
       } catch (err) {
@@ -94,12 +93,18 @@ export default function App() {
     if (!query.length) {
       setMovies([]);
       setError(null);
+      setSelectedID("");
+
       return;
     }
+
     fetchAPI();
   }, [query]);
   const handlerSelectedID = (id) => {
     setSelectedID((prevID) => (prevID === id ? null : id));
+  };
+  const handlerAddToWatchedList = (newMovie) => {
+    setWatched((prevList) => [...prevList, newMovie]);
   };
   return (
     <>
@@ -126,7 +131,10 @@ export default function App() {
               <WatchedMoviesList watched={watched} />
             </>
           ) : (
-            <MovieDetails selectedID={seletcedID} />
+            <MovieDetails
+              selectedID={seletcedID}
+              onAddMovie={handlerAddToWatchedList}
+            />
           )}
         </Box>
       </Main>

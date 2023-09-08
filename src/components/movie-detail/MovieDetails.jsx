@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StarRating from "../star-rating/StarRating";
-const MovieDetails = ({ selectedID }) => {
+const MovieDetails = ({ selectedID, onAddMovie }) => {
   const [movie, setMovie] = useState({});
   const [movieRating, setMovieRating] = useState("");
 
@@ -16,6 +16,11 @@ const MovieDetails = ({ selectedID }) => {
 
     fetchedMovieByID();
   }, [selectedID]);
+
+  const handlerAddMovie = () => {
+    onAddMovie(movie);
+    console.log({ ...movie, rate: movieRating });
+  };
 
   return (
     <div className="details">
@@ -49,6 +54,9 @@ const MovieDetails = ({ selectedID }) => {
         </p>
         <p>Starring by {movie.Actors}</p>
         <p>Directed by {movie.Director}</p>
+        <button className="btn-add" onClick={handlerAddMovie}>
+          Add to list
+        </button>
       </section>
     </div>
   );

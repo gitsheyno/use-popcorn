@@ -24,21 +24,21 @@ const StarRating = ({
     setRating(starts);
     setMovieRating(starts);
   };
-  console.log(movieRating);
+
   const [ratinrg, setRating] = useState(defaultRating);
   const [tempRate, setTempRate] = useState(0);
-  console.log(ratinrg);
+
   const handlerTempRateIn = (input) => {
     setTempRate(input);
   };
-  console.log("HELLO");
+
   const textStyle = {
     lineHieght: "1",
     margin: "0",
     color,
     fontSize: `${size / 1.5}px`,
   };
-  console.log(tempRate);
+
   return (
     <div style={containerStyles}>
       <div style={starContainerStye}>
