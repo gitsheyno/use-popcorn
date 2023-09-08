@@ -8,6 +8,7 @@ import Box from "./components/listbox/Box";
 import WatchedSummary from "./components/watchedsummary/WatchedSummary";
 import WatchedMoviesList from "./components/watchedmovielists/WatchedMoviesLists";
 import MoviesLists from "./components/moviesLists/MoviesLists";
+import MovieDetails from "./components/movie-detail/MovieDetails";
 const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -53,41 +54,80 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-
+console.log([].length);
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
+  const [seletcedID, setSelectedID] = useState(null);
 
   useEffect(() => {
     const fetchAPI = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const res = await fetch(
-          "http://www.omdbapi.com/?i=tt3896198&apikey=773314ad&s=Inception"
+          `http://www.omdbapi.com/?apikey=773314ad&s=${query}`
         );
+
+        if (!res.ok) {
+          throw new Error("something went wrong");
+        }
         const data = await res.json();
         console.log(data);
+        if (data.Response === "False") {
+          throw new Error("Movie not found");
+        }
+        console.log(data, "data");
+        console.log(data.Search, "search");
+        setMovies(data.Search);
+        setIsLoading(false);
       } catch (err) {
-        console.log(err);
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
+    if (!query.length) {
+      setMovies([]);
+      setError(null);
+      return;
+    }
     fetchAPI();
-  }, []);
-
+  }, [query]);
+  const handlerSelectedID = (id) => {
+    setSelectedID((prevID) => (prevID === id ? null : id));
+  };
   return (
     <>
       <Navbar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumRes movies={movies} />
       </Navbar>
       <Main movies={movies}>
         <Box>
-          <MoviesLists movies={movies} />
+          {isLoading && <p className="loader">Is Loading...</p>}
+          {!isLoading && !error && (
+            <MoviesLists
+              movies={movies}
+              handlerSelectedID={handlerSelectedID}
+            />
+          )}
+          {!isLoading && error && <p className="error">{error}</p>}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
+          {!seletcedID ? (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          ) : (
+            <MovieDetails selectedID={seletcedID} />
+          )}
         </Box>
       </Main>
     </>
