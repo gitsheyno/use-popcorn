@@ -111,6 +111,22 @@ export default function App() {
     });
     setSelectedID("");
   };
+
+  const handlerDeleteMovie = (id) => {
+    console.log(watched, id);
+    const filteredWatchedLists = watched.filter(
+      (watchedMovie) => watchedMovie.id !== id
+    );
+    console.log(filteredWatchedLists);
+
+    setWatched((prevState) => {
+      const filteredWatchedLists = watched.filter(
+        (watchedMovie) => watchedMovie.id !== id
+      );
+
+      return filteredWatchedLists;
+    });
+  };
   return (
     <>
       <Navbar>
@@ -133,7 +149,10 @@ export default function App() {
           {!seletcedID ? (
             <>
               <WatchedSummary watched={watched} />
-              <WatchedMoviesList watched={watched} />
+              <WatchedMoviesList
+                watched={watched}
+                onDelete={handlerDeleteMovie}
+              />
             </>
           ) : (
             <MovieDetails

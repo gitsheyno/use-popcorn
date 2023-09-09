@@ -1,4 +1,7 @@
-const WatchedMovie = ({ movie }) => {
+const WatchedMovie = ({ movie, onDelete }) => {
+  const handlerDelete = () => {
+    onDelete(movie.id);
+  };
   return (
     <li>
       <img src={movie.Poster} alt={`${movie.Title} poster`} />
@@ -17,7 +20,9 @@ const WatchedMovie = ({ movie }) => {
           <span>{movie.runtime.split(" ")[0]} min</span>
         </p>
       </div>
-      <button className="btn-delete">Delete</button>
+      <button className="btn-delete" onClick={handlerDelete}>
+        Delete
+      </button>
     </li>
   );
 };

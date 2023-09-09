@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StarRating from "../star-rating/StarRating";
+
 const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
   const [movie, setMovie] = useState({});
   const [movieRating, setMovieRating] = useState("");
@@ -9,7 +10,6 @@ const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
     (movie) => movie.id === selectedID
   )?.userRating;
 
-  console.log(isWatched, watchedUserRating);
   useEffect(() => {
     const fetchedMovieByID = async () => {
       const res = await fetch(
@@ -32,7 +32,6 @@ const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
       runtime: movie.Runtime,
       id: movie.imdbID,
     });
-    // console.log({ ...movie, rate: movieRating });
   };
 
   return (
@@ -71,7 +70,7 @@ const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
         </p>
         <p>Starring by {movie.Actors}</p>
         <p>Directed by {movie.Director}</p>
-        {StaticRange && (
+        {movieRating && (
           <button className="btn-add" onClick={handlerAddMovie}>
             Add to list
           </button>
