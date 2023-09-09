@@ -21,7 +21,7 @@ const WatchedMovie = ({ movie, onDelete }) => {
         </p>
       </div>
       <button className="btn-delete" onClick={handlerDelete}>
-        Delete
+        ❌
       </button>
     </li>
   );

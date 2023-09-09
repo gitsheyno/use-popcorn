@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
 import StarRating from "../star-rating/StarRating";
 
-const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
+const MovieDetails = ({ selectedID, onAddMovie, watched, onBack }) => {
   const [movie, setMovie] = useState({});
   const [movieRating, setMovieRating] = useState("");
 
   const isWatched = watched.map((movie) => movie.id).includes(selectedID);
+
   const watchedUserRating = watched.find(
     (movie) => movie.id === selectedID
   )?.userRating;
+
+  const handlerBack = () => {
+    onBack();
+  };
+  useEffect(() => {
+    document.title = `Movie | ${movie.Title}`;
+
+    return () => {
+      document.title = "usePopcorn";
+    };
+  }, [movie.Title]);
 
   useEffect(() => {
     const fetchedMovieByID = async () => {
@@ -36,6 +48,9 @@ const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
 
   return (
     <div className="details">
+      <button className="btn-back" onClick={handlerBack}>
+        &larr;
+      </button>
       <header>
         <img src={movie.Poster} alt={movie.title} />
         <div className="details-overview">

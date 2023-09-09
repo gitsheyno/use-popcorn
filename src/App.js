@@ -9,51 +9,6 @@ import WatchedSummary from "./components/watchedsummary/WatchedSummary";
 import WatchedMoviesList from "./components/watchedmovielists/WatchedMoviesLists";
 import MoviesLists from "./components/moviesLists/MoviesLists";
 import MovieDetails from "./components/movie-detail/MovieDetails";
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
-];
 
 export default function App() {
   const [movies, setMovies] = useState([]);
@@ -64,12 +19,15 @@ export default function App() {
   const [seletcedID, setSelectedID] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    console.log(controller);
     const fetchAPI = async () => {
       try {
         setIsLoading(true);
         setError(null);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=773314ad&s=${query}`
+          `http://www.omdbapi.com/?apikey=773314ad&s=${query}`,
+          { signal: controller.signal }
         );
 
         if (!res.ok) {
@@ -99,6 +57,10 @@ export default function App() {
     }
 
     fetchAPI();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   const handlerSelectedID = (id) => {
@@ -113,19 +75,17 @@ export default function App() {
   };
 
   const handlerDeleteMovie = (id) => {
-    console.log(watched, id);
-    const filteredWatchedLists = watched.filter(
-      (watchedMovie) => watchedMovie.id !== id
-    );
-    console.log(filteredWatchedLists);
-
     setWatched((prevState) => {
-      const filteredWatchedLists = watched.filter(
+      const filteredWatchedLists = prevState.filter(
         (watchedMovie) => watchedMovie.id !== id
       );
 
       return filteredWatchedLists;
     });
+  };
+
+  const handlerBack = () => {
+    setSelectedID("");
   };
   return (
     <>
@@ -159,6 +119,7 @@ export default function App() {
               selectedID={seletcedID}
               onAddMovie={handlerAddToWatchedList}
               watched={watched}
+              onBack={handlerBack}
             />
           )}
         </Box>
