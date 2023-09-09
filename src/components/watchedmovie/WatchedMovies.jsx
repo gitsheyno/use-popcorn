@@ -14,9 +14,10 @@ const WatchedMovie = ({ movie }) => {
         </p>
         <p>
           <span>⏳</span>
-          <span>{movie.runtime} min</span>
+          <span>{movie.runtime.split(" ")[0]} min</span>
         </p>
       </div>
+      <button className="btn-delete">Delete</button>
     </li>
   );
 };

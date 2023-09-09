@@ -100,11 +100,16 @@ export default function App() {
 
     fetchAPI();
   }, [query]);
+
   const handlerSelectedID = (id) => {
     setSelectedID((prevID) => (prevID === id ? null : id));
   };
+
   const handlerAddToWatchedList = (newMovie) => {
-    setWatched((prevList) => [...prevList, newMovie]);
+    setWatched((prevList) => {
+      return [...prevList, newMovie];
+    });
+    setSelectedID("");
   };
   return (
     <>
@@ -134,6 +139,7 @@ export default function App() {
             <MovieDetails
               selectedID={seletcedID}
               onAddMovie={handlerAddToWatchedList}
+              watched={watched}
             />
           )}
         </Box>

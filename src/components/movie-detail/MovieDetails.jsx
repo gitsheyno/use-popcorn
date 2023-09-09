@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import StarRating from "../star-rating/StarRating";
-const MovieDetails = ({ selectedID, onAddMovie }) => {
+const MovieDetails = ({ selectedID, onAddMovie, watched }) => {
   const [movie, setMovie] = useState({});
   const [movieRating, setMovieRating] = useState("");
 
+  const isWatched = watched.map((movie) => movie.id).includes(selectedID);
+  const watchedUserRating = watched.find(
+    (movie) => movie.id === selectedID
+  )?.userRating;
+
+  console.log(isWatched, watchedUserRating);
   useEffect(() => {
     const fetchedMovieByID = async () => {
       const res = await fetch(
@@ -18,8 +24,15 @@ const MovieDetails = ({ selectedID, onAddMovie }) => {
   }, [selectedID]);
 
   const handlerAddMovie = () => {
-    onAddMovie(movie);
-    console.log({ ...movie, rate: movieRating });
+    onAddMovie({
+      title: movie.Title,
+      Poster: movie.Poster,
+      imdbRating: movie.imdbRating,
+      userRating: movieRating,
+      runtime: movie.Runtime,
+      id: movie.imdbID,
+    });
+    // console.log({ ...movie, rate: movieRating });
   };
 
   return (
@@ -40,23 +53,29 @@ const MovieDetails = ({ selectedID, onAddMovie }) => {
       </header>
       <section>
         <div className="rating">
-          <StarRating
-            key={movie.imdbRating}
-            defaultRating={0}
-            maxRatinrg={10}
-            size={24}
-            movieRating={movieRating}
-            setMovieRating={setMovieRating}
-          />
+          {!isWatched ? (
+            <StarRating
+              key={movie.imdbRating}
+              defaultRating={0}
+              maxRatinrg={10}
+              size={24}
+              movieRating={movieRating}
+              setMovieRating={setMovieRating}
+            />
+          ) : (
+            <p>your given rate is : {watchedUserRating}</p>
+          )}
         </div>
         <p>
           <em>{movie.Plot}</em>
         </p>
         <p>Starring by {movie.Actors}</p>
         <p>Directed by {movie.Director}</p>
-        <button className="btn-add" onClick={handlerAddMovie}>
-          Add to list
-        </button>
+        {StaticRange && (
+          <button className="btn-add" onClick={handlerAddMovie}>
+            Add to list
+          </button>
+        )}
       </section>
     </div>
   );
