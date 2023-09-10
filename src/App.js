@@ -12,7 +12,10 @@ import MovieDetails from "./components/movie-detail/MovieDetails";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  // const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(() =>
+    JSON.parse(localStorage.getItem("watched"))
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
@@ -62,6 +65,10 @@ export default function App() {
       controller.abort();
     };
   }, [query]);
+
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify(watched));
+  }, [watched]);
 
   const handlerSelectedID = (id) => {
     setSelectedID((prevID) => (prevID === id ? null : id));
