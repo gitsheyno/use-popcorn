@@ -6,7 +6,6 @@ const Search = ({ query, setQuery }) => {
   useEffect(() => {
     const callBack = (e) => {
       if (document.activeElement === searchRef.current) {
-        console.log(document.activeElement, searchRef.current);
         return;
       }
 

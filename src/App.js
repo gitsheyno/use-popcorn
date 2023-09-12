@@ -9,58 +9,41 @@ import WatchedSummary from "./components/watchedsummary/WatchedSummary";
 import WatchedMoviesList from "./components/watchedmovielists/WatchedMoviesLists";
 import MoviesLists from "./components/moviesLists/MoviesLists";
 import MovieDetails from "./components/movie-detail/MovieDetails";
-
+import useHttpRequest from "./hooks/use-httpsRequest";
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  // const [watched, setWatched] = useState([]);
   const [watched, setWatched] = useState(() =>
     JSON.parse(localStorage.getItem("watched"))
   );
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+
   const [query, setQuery] = useState("");
   const [seletcedID, setSelectedID] = useState(null);
-
+  const {
+    data: movies,
+    error,
+    isLoading,
+    httpReq,
+    setError,
+    setData,
+  } = useHttpRequest();
+  console.log(movies);
   useEffect(() => {
     const controller = new AbortController();
-    console.log(controller);
-    const fetchAPI = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=773314ad&s=${query}`,
-          { signal: controller.signal }
-        );
-
-        if (!res.ok) {
-          throw new Error("something went wrong");
-        }
-        const data = await res.json();
-
-        if (data.Response === "False") {
-          throw new Error("Movie not found");
-        }
-
-        setMovies(data.Search);
-        setIsLoading(false);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
     if (!query.length) {
-      setMovies([]);
+      setData([]);
       setError(null);
       setSelectedID("");
 
       return;
     }
 
-    fetchAPI();
-
+    httpReq(
+      {
+        url: `http://www.omdbapi.com/?apikey=773314ad&s=${query}`,
+        method: "GET",
+      },
+      query
+    );
     return () => {
       controller.abort();
     };
@@ -94,6 +77,7 @@ export default function App() {
   const handlerBack = () => {
     setSelectedID("");
   };
+
   return (
     <>
       <Navbar>
